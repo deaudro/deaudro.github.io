@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dynamique d'opinions politiques dans une population</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f5f5f5;
+      color: #333;
+    }
+
+    header {
+      background-color: #333;
+      color: #fff;
+      padding: 20px;
+      text-align: center;
+    }
+
+    nav ul {
+      list-style-type: none;
+      margin: 0;
+      padding: 0;
+      background-color: #555;
+      overflow: hidden;
+    }
+
+    nav li {
+      float: left;
+    }
+
+    nav li a {
+      display: block;
+      color: #fff;
+      text-align: center;
+      padding: 14px 16px;
+      text-decoration: none;
+    }
+
+    nav li a:hover {
+      background-color: #777;
+    }
+
+    main {
+      padding: 20px;
+      background-color: #fff;
+    }
+
+    section {
+      margin-bottom: 30px;
+    }
+
+    h1, h2 {
+      color: #333;
+    }
+
+    footer {
+      background-color: #333;
+      color: #fff;
+      padding: 20px;
+      text-align: center;
+    }
+
+    footer p {
+      margin: 0;
+    }
+	.white-text {
+      color: white;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1 class="white-text">Dynamique d'opinions politiques dans une population</h1>
+  </header>
+
+  <nav>
+    <ul>
+      <li><a href="#introduction">Problématique</a></li>
+      <li><a href="#facteurs">Le principe de notre modèle</a></li>
+      <li><a href="#médias">Le principe de notre modèle</a></li>
+      <li><a href="#stratégies">Analyse des résultats</a></li>
+    </ul>
+  </nav>
+
+  <main>
+    <section id="introduction">
+      <h2>Comment modéliser le plus simplement possible une transmission d'idéaux politiques au sein d'une population ?</h2>
+      <ul>
+      <li>Les moyens de partager son avis politique et d’influer sur celui des autres sont nombreux.</li>
+      <li>À l’aide d’une documentation riche et fiable nous avons mis au point une variante d’un modèle déjà existant.</li>
+      
+	</ul>
+    </section>
+
+    <section id="facteurs">
+		<h2>Le principe de notre modèle</h2>
+      <h3>Inspiré du modèle « Bounded confidence »</h3>
+      <ul>
+      <li>Sa formule de base étant, si op1 est suffisamment proche de op2 : Op1 (t+1) += (Op2(t) - Op1(t)) * (1 - dist(Op1, Op2) * C</li>
+      <li>Avec Op1, Op2 deux nombres flottants compris entre 0 et 10, dist la distance entre Op1, Op2 et C une constante arbitraire fixée par l’utilisateur.</li>
+      <li>Notre formule à nous : Op1 (t+1) += (Op2(t) - Op1(t)) * (2*dist - ((dist^2)/5))/50000</li>
+	  <li>Unité de temps : semaine</li>
+    </ul>
+    </section>
+
+    <section id="médias">
+      <h2>Le principe de notre modèle</h2>
+      <ul>
+      <li>Une famille est composée de deux personnes ayant une opinion politique</li>
+      <li>Chaque famille va interagir avec ses voisins (paramètre) selon la formule. On vérifie l’écart entre opinions au niveau de la moyenne des deux opinions de chaque famille.</li>
+      <li>Si la condition (de distance) est réalisée, on applique la formule. Sinon, on ne fait rien.</li>
+    </ul>
+    </section>
+
+    <section id="stratégies">
+      <h2>Analyse des résultats</h2>
+      <img src="image.png" alt="Description de l'image">
+	  
+	  <h3>Exemple de modélisation Python</h3>
+      <pre>
+        <code>
+		import random
+
+
+	def init_individus (repartition,longueur):
+		gcd=0
+		c1=[]
+		c2=[]
+		for i in repartition:
+			cpt=round (longueur*i)
+			c1.append (cpt)
+		for j in c1:
+			for x in range (j):
+				c2.append(gcd)
+			gcd=gcd+1
+
+		return c2
+
+	def init_monde(repartition, longueur): #on suppose len pair pour pouvoir former des couples avec tous les individus
+ 
+		lstacaser = init_individus(repartition, longueur)
+		lstfamilles = []
+		for p in repartition: 
+
+			for n in range(round(len(lstacaser)/2)):
+				famille = []
+				famille = random.sample(lstacaser,k = 2)
+				famille.append(n)
+				lstfamilles.append(famille)
+				lstacaser.remove(famille[0])
+				lstacaser.remove(famille[1])
+		return lstfamilles
+
+	mondetestreel=init_monde([0.01,0.02,0.05,0.07,0.06, 0.24, 0.08,0.13,0.14,0.04,0.05], 2000)
+	[20:24]
+	def init_individus (repartition,longueur):
+		gcd=0
+		c1=[]
+		c2=[]
+		for i in repartition:
+			cpt=round (longueur*i)
+			c1.append (cpt)
+		for j in c1:
+			for x in range (j):
+				c2.append(gcd)
+			gcd=gcd+1
+
+		return c2
+
+	def init_voisins(monde): #on admettra ici que les voisins sont déterminés par rapport à la distance entre les éléments de la liste
+
+		lstarepartir = monde.copy()
+		random.shuffle(lstarepartir)
+		return lstarepartir
+
+	distancemaxfixe = 5
+	def deffuantuni(famille1, famille2, distancemax):
+		m1 = (famille1[0] + famille1[1])/2
+		m2 = (famille2[0] + famille2[1])/2
+		dist = abs(m1 - m2)
+
+    if dist < distancemax :
+        fam1 = famille1.copy()
+        fam1[0] += (m2-fam1[0])       ((2dist -((dist2)/5))/50000)
+        fam1[1] += (m2-fam1[1])       ((2dist -((dist2)/5))/50000)
+        return(fam1)
+    else:
+        return(famille1)
+
+
+
+
+
+
+	def flistevoisins(liste, index, voisins):
+		listevoisins = []
+		for i in range(index-voisins, index+voisins+1):
+			if i >= 0 and i < len(liste):
+				listevoisins.append(liste[i])
+		return listevoisins
+
+
+
+
+
+	def socialisation(monde, nbvoisins, indexfamille):
+		influencee = monde[indexfamille]
+		lvoisins = flistevoisins(monde, indexfamille, nbvoisins)
+		for elt in lvoisins:
+			influencee = deffuantuni(influencee, elt, distancemaxfixe)
+		return influencee
+
+
+	listent = [[6, 4, 0], [4, 7, 1], [4, 3, 2], [2, 6, 3], [6, 0, 4], [7, 3, 5], [2, 4, 6], [8, 2, 7]]
+
+
+	def toursemaine(monde,nbvoisins):
+		tmp = monde.copy()
+		renvoi = []
+		for i in range(len(tmp)):
+			renvoi.append(socialisation(tmp, nbvoisins, i))
+		return renvoi
+
+
+
+
+
+
+
+
+	def toursemaines(monde, nbvoisins, nbsemaines):
+		t = toursemaine(monde, nbvoisins)
+		for i in range(nbsemaines):
+			t = toursemaine(t, nbvoisins)
+
+		return t
+
+
+	def moyenneop(liste):
+		compteur = 0
+		for elt in liste:
+			compteur += elt[0]
+			compteur += elt[1]
+		return compteur/(2*len(liste))
+
+
+     </code>
+     </pre>
+	 <img src="image.png" alt="Description de l'image">
+
+    </section>
+  </main>
+<footer>
+    <p>© by Gabriel Fernandez, Yannis Lalioui, Eduardo Onica, Antoine Dehove</p>
